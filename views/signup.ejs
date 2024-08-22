@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up & Sign In Page</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+    }
+
+    .container {
+        max-width: 400px;
+        margin: 100px auto;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        padding-right: 10PX;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .sign-in-form {
+        display: none;
+    }
+
+    .toggle-btn {
+        text-align: center;
+    }
+
+    .toggle-btn a {
+        color: #007bff;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .fadeIn {
+        animation-name: fadeIn;
+        animation-duration: 1s;
+    }
+</style>
+</head>
+<body>
+    
+    <div class="container fadeIn">
+        <h2>Sign Up</h2>
+        <form id="signUpForm" class="sign-up-form" action="/signup" method="POST">
+            <!-- <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div> -->
+            <div class="form-group">
+                <label for="givenName">  Given Name: </label>
+                <input type="text" id="givenName" name="givenName" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="contactNumber">Contact Number:</label>
+                <input type="tel" id="contactNumber" name="contactNumber" pattern="[0-9]{10}" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="yob">Year of Birth:</label>
+                <input type="date" id="yob" name="yob" pattern="[0-9]{4}" required>
+            </div>
+            <input type="submit" value="Sign Up">
+        </form>
+        <div class="toggle-btn">
+            <p>Already have an account? <a href="/sign" id="toggleSignIn">Sign In</a></p>
+        </div>
+    </div>
+
+    <div class="container sign-in-form">
+        <h2>Sign In</h2>
+        <form action="/signup" method="POST" id="signInForm">
+            <div class="form-group">
+                <label for="signinUsername">Username</label>
+                <input type="text" id="signinUsername" name="signinUsername" required>
+            </div>
+            <div class="form-group">
+                <label for="signinPassword">Password</label>
+                <input type="password" id="signinPassword" name="signinPassword" required>
+            </div>
+            <button>
+                <input type="submit" value="Sign In">
+
+            </button>
+        </form>
+        <div class="toggle-btn">
+            <p>Don't have an account? <a href="/sign" id="toggleSignUp">Sign Up</a></p>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        const signUpForm = document.getElementById('signUpForm');
+        const signInForm = document.getElementById('signInForm');
+        const toggleSignIn = document.getElementById('toggleSignIn');
+        const toggleSignUp = document.getElementById('toggleSignUp');
+
+        toggleSignIn.addEventListener('click', function() {
+            signUpForm.classList.remove('fadeIn');
+            signInForm.classList.add('fadeIn');
+            signUpForm.style.display = 'none';
+            signInForm.style.display = 'block';
+        });
+
+        toggleSignUp.addEventListener('click', function() {
+            signInForm.classList.remove('fadeIn');
+            signUpForm.classList.add('fadeIn');
+            signInForm.style.display = 'none';
+            signUpForm.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

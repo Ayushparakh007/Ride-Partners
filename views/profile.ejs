@@ -1,0 +1,392 @@
+<!-- 
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap"rel="stylesheet">
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+   
+    <script
+    src="https://kit.fontawesome.com/64d58efce2.js"
+    crossorigin="anonymous">
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: #000;
+      }
+
+      .card {
+        width: 350px;
+        background-color: #efefef;
+        border: none;
+        cursor: pointer;
+        transition: all 0.5s;
+      }
+
+      .image img {
+        transition: all 0.5s;
+      }
+
+      .card:hover .image img {
+        transform: scale(1.5);
+      }
+
+      .btn {
+        height: 140px;
+        width: 140px;
+        border-radius: 50%;
+      }
+
+      .name {
+        font-size: 22px;
+        font-weight: bold;
+      }
+
+      .idd {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .idd1 {
+        font-size: 12px;
+      }
+
+      .number {
+        font-size: 22px;
+        font-weight: bold;
+      }
+
+      .follow {
+        font-size: 12px;
+        font-weight: 500;
+        color: #444444;
+      }
+
+      .btn1 {
+        height: 40px;
+        width: 150px;
+        border: none;
+        background-color: #000;
+        color: #fff;
+        font-size: 15px;
+      }
+
+      .text span {
+        font-size: 13px;
+        color: #545454;
+        font-weight: 500;
+      }
+
+      .icons i {
+        font-size: 19px;
+      }
+
+      .date {
+        background-color: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bg-lime-300 ">
+        <nav class="flex justify-between items-center w-[92%]   mx-auto">
+            <div>
+                <img class="w-12 cursor-pointer  rounded-2xl	pt-1 pb-1	" src="images/header1.png"
+                    alt="...">
+            </div>
+            <div
+                class="nav-links duration-500 md:static absolute bg-lime-300 md:min-h-fit min-h-[60vh] left-0 right-0 top-[-100%] md:w-auto  w-full flex items-center px-5">
+                <ul class="flex md:flex-row flex-col md:items-center md:gap-[4vw]  gap-8">
+                    <li>
+                        <a class="hover:text-gray-500" href="/index">Home</a>
+                    </li>
+                    <li>
+                        <a class="hover:text-gray-500" href="/index5">Service</a>
+                    </li>
+                    <li>
+                        <a class="hover:text-gray-500" href="#about">About</a>
+                    </li>
+                    <li>
+                        <a class="hover:text-gray-500" href="#contact">Contact</a>
+                    </li>
+                    <li>
+                        <a class="hover:text-gray-500" href="#pricing">Pricing</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="flex items-center gap-6">
+         
+              <a href="/logout" class="bg-[#0d51c6] text-white px-5 py-2 rounded-full hover:bg-[#041532]">
+                logout
+              </a>
+              <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden"></ion-icon>
+            </div>
+            
+    </header>
+    <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+      <div class="card p-4">
+        <div
+          class="image d-flex flex-column justify-content-center align-items-center"
+        >
+          <button class="btn btn-secondary">
+            <img src="download.jpeg" height="100" width="100" />
+          </button>
+          <span class="name mt-3">Eleanor Pena</span>
+          <label>Name:</label>
+    <span id="name"><%= name %></span>
+          
+          <span class="idd">@eleanorpena</span>
+          <div
+            class="d-flex flex-row justify-content-center align-items-center gap-2"
+          >
+            <span class="idd1">Oxc4c16a645_b21a</span>
+            <label>Email:</label>
+    <span id="email"><%= email %></span>
+
+            <span><i class="fas fa-copy"></i></span>
+          </div>
+          <div
+            class="d-flex flex-row justify-content-center align-items-center mt-3"
+          >
+          <label>Gender:</label>
+    <span id="gender"><%= gender %></span>
+            <span class="number"
+              >1069 <span class="follow">Followers</span></span
+            >
+          </div>
+          <div class="d-flex mt-2">
+            <button class="btn1 btn-dark">Edit Profile</button>
+          </div>
+          <div class="text mt-3">
+            <label>Phone Number:</label>
+    <span id="phone_number"><%= phone_number %></span>
+    <label>Year of Birth:</label>
+    <span id="yob"><%= your_date_column %></span>
+            <span
+              >Eleanor Pena is a creator of minimalistic x bold graphics and
+              digital artwork.<br /><br />
+              Artist/ Creative Director by Day #NFT minting@ with FND night.
+            </span>
+          </div>
+          <div
+            class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"
+          >
+            <span><i class="fab fa-twitter"></i></span>
+            <span><i class="fab fa-facebook-f"></i></span>
+            <span><i class="fab fa-instagram"></i></span>
+            <span><i class="fab fa-linkedin"></i></span>
+          </div>
+          <div class="px-2 rounded mt-4 date">
+            <span class="join">Joined May,2021</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Document</title>
+<link rel="stylesheet" href="/style.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FONTS -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap"rel="stylesheet">
+<script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+
+<script
+src="https://kit.fontawesome.com/64d58efce2.js"
+crossorigin="anonymous">
+</script>
+
+<link
+rel="stylesheet"
+href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+/>
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+/>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #15d328; /* Green background */
+}
+
+.card {
+  width: 350px;
+  background-color: rgb(190 242 100); /* Yellow card background */
+  border: none;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+/* Add this style to center the image */
+.image {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%; /* Ensure the image div takes full height */
+}
+
+.image img {
+  transition: all 0.5s;
+}
+
+.card:hover .image img {
+  transform: scale(1.5);
+}
+
+.image img {
+  transition: all 0.5s;
+}
+
+.card:hover .image img {
+  transform: scale(1.5);
+}
+
+.btn {
+  height: 140px;
+  width: 140px;
+  border-radius: 50%;
+}
+
+.name, .idd, .idd1, .number, .follow, .text span {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.btn1 {
+  height: 40px;
+  width: 150px;
+  border: none;
+  background-color: #2ecc71; /* Yellow button background */
+  color: #000; /* Button text color */
+  font-size: 15px;
+}
+
+.text span {
+  font-size: 13px;
+  color: #545454;
+  font-weight: 500;
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: #e7ebef;
+  border-color: #eeeff0;
+}
+
+.icons i {
+  font-size: 19px;
+}
+
+.date {
+  background-color: #cccccc00;
+}
+</style>
+
+</head>
+<body style="background-image: url('images/bg.jpg'); background-size: cover">
+<header class="bg-lime-300 ">
+<nav class="flex justify-between items-center w-[92%] mx-auto">
+  <div>
+    <img class="w-12 cursor-pointer rounded-2xl pt-1 pb-1 " src="images/header1.png" alt="...">
+  </div>
+  <div class="nav-links duration-500 md:static absolute bg-lime-300 md:min-h-fit min-h-[60vh] left-0 right-0 top-[-100%] md:w-auto w-full flex items-center px-5">
+    <ul class="flex md:flex-row flex-col md:items-center md:gap-[4vw] gap-8">
+      <li>
+        <a class="hover:text-white-500" href="/index">Home</a>
+      </li>
+      <li>
+        <a class="hover:text-white-500" href="/index5">Service</a>
+      </li>
+      <li>
+        <a class="hover:text-white-500" href="#about">About</a>
+      </li>
+      <li>
+        <a class="hover:text-white-500" href="#contact">Contact</a>
+      </li>
+      <li>
+        <a class="hover:text-white-500" href="#pricing">Pricing</a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex items-center gap-6">
+    <a href="/logout" class="bg-[#0d51c6] text-white px-5 py-2 rounded-full hover:bg-[#041532]">
+      logout
+    </a>
+    <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden"></ion-icon>
+  </div>
+
+</header>
+<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+  <div class="card p-4">
+    <div class="image d-flex flex-column justify-content-center align-items-center">
+      <button class="btn btn-secondary justify-content-center algin-items-center">
+        <img src="images/dp.png" height="80" width="100" />
+      </button>
+      <span class="name mt-3">Name:</span>
+      <span class="name" id="name"><%= name %></span>
+      
+      <span class="idd mt-3">Email:</span>
+      <span class="idd" id="email"><%= email %></span>
+      
+      <span class="idd mt-3">Gender:</span>
+      <span class="idd" id="gender"><%= gender %></span>
+      
+      <span class="idd mt-3">Phone Number:</span>
+      <span class="idd" id="phone_number"><%= phone_number %></span>
+      
+      <span class="idd mt-3">Year of Birth:</span>
+      <span class="idd" id="yob"><%= your_date_column %></span>
+      
+      <div class="d-flex mt-2">
+        <button class="btn1 btn-dark">Edit Profile</button>
+      </div>
+      <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
+        <span><i class="fab fa-twitter"></i></span>
+        <span><i class="fab fa-facebook-f"></i></span>
+        <span><i class="fab fa-instagram"></i></span>
+        <span><i class="fab fa-linkedin"></i></span>
+      </div>
+      <div class="px-2 rounded mt-4 date">
+        <span class="join">Joined May,2021</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

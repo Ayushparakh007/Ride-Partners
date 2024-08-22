@@ -1,0 +1,478 @@
+
+<!doctype html>
+
+<html>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap"rel="stylesheet">
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+   
+    <script
+    src="https://kit.fontawesome.com/64d58efce2.js"
+    crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<div class="res-container">
+  <div class="res-row">
+<div id="block-1 b3">
+  
+<div id="loader-wrap">
+<div id="loading">
+<div id="loading-center">
+<div id="loading-center-absolute">
+<div id="object"></div>
+<div id="loader"></div>
+</div>
+</div>
+</div>
+</div>
+  
+   </div>
+</div>
+ </div>
+<body class="font-[Poppins]  h-screen">
+   <!-- Navbar -->
+    <header class="bg-lime-300 ">
+        <nav class="flex justify-between items-center w-[92%]   mx-auto">
+            <div>
+                <img class="w-12 cursor-pointer  rounded-2xl	pt-1 pb-1	" src="images/header1.png"
+                    alt="...">
+            </div>
+            <div
+                class="nav-links duration-500 md:static absolute bg-lime-300 md:min-h-fit min-h-[60vh] left-0 right-0 top-[-100%] md:w-auto  w-full flex items-center px-5">
+                <ul class="flex md:flex-row flex-col md:items-center md:gap-[4vw]  gap-8">
+                    <li>
+                        <a class="hover:text-gray-500" href="/profile">Profile</a>
+                    </li>
+                    <li>
+                        <a class="hover:text-gray-500" href="/index5">Service</a>
+                    </li>
+                    <li>
+                        <a class="hover:text-gray-500" href="#about">About</a>
+                    </li>
+                    <li>
+                        <a class="hover:text-gray-500" href="#contact">Contact</a>
+                    </li>
+                    <li>
+                        <a class="hover:text-gray-500" href="#pricing">Pricing</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="flex items-center gap-6">
+             
+             
+              <a href="/logout" class="bg-[#0d51c6] text-white px-5 py-2 rounded-full hover:bg-[#041532]">
+                logout
+              </a>
+           
+              <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden"></ion-icon>
+            </div>
+            
+    </header>
+   
+   
+    <!-- background image for homepage  -->
+    <div class="grid bg-[url('images/photo-1515256722043-0f2b082ddadc.jpg')] size-full  bg-cover bg-no-repeat 	">
+        <div class="font-extrabold text-center pt-64 ">
+          <b  class="   font-extrabold text-neutral-300 text-2xl md:text-6xl">
+            We Go the Extra Mile for You<br animate3 >
+                Need a lift?
+                <span animate3  class="text-green-500" id="typewriter"></span>
+                <span  class="text-green-500" id="cursor">.</span>
+                <br>
+                Vellore’s most reliable taxi service 
+            </b>
+        </div>
+    </div>
+    <section id="about">
+    <!-- know more about the ride partner -->
+    <div class="container2">
+    <div class=" grid-container pt-1 ">
+        <div class="img2 small-container  rounded-r-2xl bg-[url('images/taxi.png')] bg-no-repeat bg-left-bottom -z-10"></div>
+        <div class=" hidden1 delay-400 big-container ">
+            <b >Ride Partner</b>
+            <p >Travel with Comfort and Ease
+
+                Ride Partner connects riders traveling from VIT Vellore to Chennai airport with each other and with cab drivers. <br>
+                We strive to provide affordable and reliable transportation services that cater to your specific travel needs. <br>
+                Our team is dedicated to ensuring that you have a comfortable and stress-free ride, no matter the distance. <br>
+                Contact us to learn more about how our professional team can help you reach your destination with ease. <br>
+            </p>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    </div>
+    </section >
+    <!-- testmionial -->
+   
+    <div class="content-wrapper place-items-center   bg-cyan-300 size-full  bg-cover bg-no-repeat  -z-10 ">
+		<!-- hidden1 delay-700  -->
+	
+		<div class="wrapper-for-arrows">
+			<div style="opacity: 0;" class="chicken"></div>
+			<div id="reviewWrap" class="review-wrap">
+				<div id="imgDiv" class="">
+				</div >
+				<div id="personName"></div>
+				<div id="profession"></div>
+				<div id="description">
+				</div>
+			</div>
+			<!-- <div id="surpriseMeBtn" class="surprise-me-btn">Surprise me</div> -->
+			<div class="left-arrow-wrap arrow-wrap">
+				<div class="arrow" id="leftArrow"></div>
+			</div>
+			<div class="right-arrow-wrap arrow-wrap">
+				<div class="arrow" id="rightArrow"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<article id="article">
+
+
+<!-- contact information for the ride partner -->
+   
+  </article>
+  <section id="pricing">
+  <div class="container5">
+    <div class="pricing-table">
+        <div class=" item5 pricing-card">
+            <h3>Hatchback</h3>
+            <div class="price">700 </div>
+            <ul class="features">
+                <li>Practical and compact design, ideal for city driving and tight parking spaces.</li>
+               
+              
+                
+            </ul>
+            <a href="/pay" class="button">Buy Now</a>
+        </div>
+        <div class=" item5  pricing-card">
+            <h3>Sedan</h3>
+            <div class="price">1000</div>
+            <ul class="features">
+                
+                <li>Comfort and Ride Quality</li>
+                <li>Spacious Interior</li>
+              
+            </ul>
+            <a href="/pay" class="button">Buy Now</a>
+        </div>
+        <div class=" item5 pricing-card">
+            <h3>Suv</h3>
+            <div class="price">1300</div>
+            <ul class="  features">
+                <li>Roomy interiors, accommodating six to seven adults comfortably.</li>
+               
+            </ul>
+            <a href="/pay" class="button">Buy Now</a>
+        </div>
+    </div>
+</div>
+<section id="contact">
+<div class="container1  size-full  bg-cover panel">
+  <span class="big-circle"></span>
+  <img src="img/shape.png" class="square" alt="" />
+  <div class="form">
+    <div animate1 class="rotatingHeader contact-info ">
+      <h3  class="title ">Let's get in touch</h3>
+      <p class="text ">
+        If you have any queries please feel free to contact us and do share your valuable feedbacks so that we can improve our website
+      </p>
+
+      <div class="info">
+        <div class="information">
+          <i class="fas fa-map-marker-alt"></i> &nbsp &nbsp
+
+          <p>VIT Vellore,Katpadi,Tamil Nadu</p>
+        </div>
+        <div class="information">
+          <i class="fas fa-envelope"></i> &nbsp &nbsp
+          <p>ridepartner@gmail.com</p>
+        </div>
+        <div class="information">
+          <i class="fas fa-phone"></i>&nbsp&nbsp
+          <p>9436129119</p>
+        </div>
+      </div>
+
+      <div class="social-media">
+        <p>Connect with us :</p>
+        <div class="social-icons">
+          <a href="#">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- users details typed there -->
+    <div class="contact-form">
+      <span class="circle one"></span>
+      <span class="circle two"></span>
+
+      <form action="index.html" autocomplete="off">
+        <h3 class="title">Contact us</h3>
+        <div class="input-container">
+          <input type="text" name="name" class="input" />
+          <label for="">Username</label>
+          <span>Username</span>
+        </div>
+        <div class="input-container">
+          <input type="email" name="email" class="input" />
+          <label for="">Email</label>
+          <span>Email</span>
+        </div>
+        <div class="input-container">
+          <input type="tel" name="phone" class="input" />
+          <label for="">Phone</label>
+          <span>Phone</span>
+        </div>
+        <div class="input-container textarea">
+          <textarea name="message" class="input"></textarea>
+          <label for="">Message</label>
+          <span>Message</span>
+        </div>
+        <input type="submit" value="Send" class="btn" />
+      </form>
+    </div>
+  </div>
+</div>
+</section>
+
+
+</div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+
+gsap.from('.item5', {
+    x: '0%', 
+    opacity: 0.5,
+    duration: 5,
+    stagger: 5.2, 
+    scrollTrigger: {
+        trigger: '.container5', 
+        start: 'top center', 
+        end: '+=140px', 
+        scrub: true, 
+        
+        ease: 'power2.inOut',
+        toggleActions: 'play pause resume reverse', 
+    },
+});
+
+
+</script>
+<script>
+  const cards = document.querySelectorAll(".card");
+cards.forEach((item) => {
+  item.addEventListener("mouseover", () => {
+    cards.forEach((el) => el.classList.remove("active"));
+    item.classList.add("active");
+  });
+});
+</script>
+     
+  <script>
+    document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+    setTimeout(function() {    document.getElementById("loading").className = "slideDown";
+    }, 1000);
+  },
+  false
+);
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+    setTimeout(function() {
+      document.getElementById("loading-center").className = "zoomOut";
+    }, 1000);
+  },
+  false
+);
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+    setTimeout(function() {
+      document.getElementById("block-1").className = "slideInUp";
+    }, 1800);
+  },
+  false
+);
+  </script>
+  <script src="https://unpkg.com/split-type"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+  
+  <script>
+  let typeSplit3 = new SplitType('[animate3]', {
+    types: 'lines, words, chars',
+    tagName: 'span'
+  })
+  
+  gsap.from('[animate3] .word', {
+    y: '100%',
+    opacity: 0,
+    duration: 0.5,
+    ease: 'power1.out',
+    stagger: 0.1,
+    
+    scrollTrigger: {
+      trigger: '[animate3]',
+      start: 'top center',
+     
+      
+    }
+  })
+  </script>
+ 
+  </script>
+      <script src="https://unpkg.com/split-type"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+      <script>
+        let typeSplit = new SplitType('[animate]', {
+          types: 'lines, words, chars',
+          tagName: 'p'
+        });
+      
+        gsap.from('[animate] .word', {
+          opacity: 0.3,
+          duration: 4,
+          ease: 'power1.out',
+          stagger: 3,
+          scrollTrigger: {
+            trigger: '[animate]',
+            start: "top center",
+            end: "+=280",
+           
+           
+            scrub: true
+            
+          }
+        });
+      </script>
+      
+      <script src="https://unpkg.com/split-type"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+      
+      <script>
+      let typeSplit1 = new SplitType('[animate1]', {
+        types: 'lines, words, chars',
+        tagName: 'div'
+      })
+      
+      gsap.from('[animate1] .line', {
+        y: '110%',
+        opacity: 0,
+        rotationZ: '10',
+        duration: 0.5,
+        ease: 'power1.out',
+        stagger: 0.1,
+        
+        scrollTrigger: {
+          trigger: '[animate1]',
+          start: 'top center',
+          markers: true
+         
+          
+        }
+      })
+      </script>
+
+
+<!-- SCRIPT FOR testmionial -->
+<script src="/script.js"></script>
+
+    <!-- script for the animation when the text comes in -->
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                console.log(entry)
+                if (entry.isIntersecting) {
+                   entry.target.classList.add('show');
+                } else {
+                    entry.target.classList.remove('show');
+                }
+            });
+
+        });
+        const hiddenElements = document.querySelectorAll('.hidden1'); 
+        hiddenElements.forEach((el) => observer.observe(el));
+    </script>
+<!-- script for the hamburger mneu -->
+    <script>
+        const navLinks = document.querySelector('.nav-links')
+        function onToggleMenu(e) {
+            e.name = e.name === 'menu' ? 'close' : 'menu'
+            navLinks.classList.toggle('top-[8.4%]')
+            navLinks.classList.toggle('opacity-40')
+        }
+    </script>
+    <!-- script for the smootness of the page -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.38/dist/lenis.min.js"></script>
+    <script>
+        const lenis = new Lenis()
+        lenis.on('scroll', (e) => {
+            console.log(e)
+        })
+        lenis.on('scroll', ScrollTrigger.update)
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000)
+        })
+        gsap.ticker.lagSmoothing(0)
+    </script>
+    <!-- script for the animation of the text in the starting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+    <script>
+        const words = ['yes', 'We Can Help'];
+        let mainTimeline = gsap.timeline({
+            repeat: -1
+        });
+        words.forEach(word => {
+            let textTimeline = gsap.timeline({
+                repeat: 1,
+                yoyo: true,
+                repeatDelay: 1
+            });
+            textTimeline.to('#typewriter', {
+                text: word,
+                duration: 1
+            });
+
+            mainTimeline.add(textTimeline);
+        });
+    </script>
+</body>
+</html>
+
