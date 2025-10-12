@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 dotenv.config(); // Load variables from .env
 
 const app = express();
-const port = 5432;
+const port = process.env.PORT || 3000;
 const saltRounds = 10;
 
 app.use(
