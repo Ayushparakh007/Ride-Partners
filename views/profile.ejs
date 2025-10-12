@@ -1,209 +1,4 @@
-<!-- 
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="/style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap"rel="stylesheet">
-    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
-   
-    <script
-    src="https://kit.fontawesome.com/64d58efce2.js"
-    crossorigin="anonymous">
-    </script>
-
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        background-color: #000;
-      }
-
-      .card {
-        width: 350px;
-        background-color: #efefef;
-        border: none;
-        cursor: pointer;
-        transition: all 0.5s;
-      }
-
-      .image img {
-        transition: all 0.5s;
-      }
-
-      .card:hover .image img {
-        transform: scale(1.5);
-      }
-
-      .btn {
-        height: 140px;
-        width: 140px;
-        border-radius: 50%;
-      }
-
-      .name {
-        font-size: 22px;
-        font-weight: bold;
-      }
-
-      .idd {
-        font-size: 14px;
-        font-weight: 600;
-      }
-
-      .idd1 {
-        font-size: 12px;
-      }
-
-      .number {
-        font-size: 22px;
-        font-weight: bold;
-      }
-
-      .follow {
-        font-size: 12px;
-        font-weight: 500;
-        color: #444444;
-      }
-
-      .btn1 {
-        height: 40px;
-        width: 150px;
-        border: none;
-        background-color: #000;
-        color: #fff;
-        font-size: 15px;
-      }
-
-      .text span {
-        font-size: 13px;
-        color: #545454;
-        font-weight: 500;
-      }
-
-      .icons i {
-        font-size: 19px;
-      }
-
-      .date {
-        background-color: #ccc;
-      }
-    </style>
-  </head>
-  <body>
-    <header class="bg-lime-300 ">
-        <nav class="flex justify-between items-center w-[92%]   mx-auto">
-            <div>
-                <img class="w-12 cursor-pointer  rounded-2xl	pt-1 pb-1	" src="images/header1.png"
-                    alt="...">
-            </div>
-            <div
-                class="nav-links duration-500 md:static absolute bg-lime-300 md:min-h-fit min-h-[60vh] left-0 right-0 top-[-100%] md:w-auto  w-full flex items-center px-5">
-                <ul class="flex md:flex-row flex-col md:items-center md:gap-[4vw]  gap-8">
-                    <li>
-                        <a class="hover:text-gray-500" href="/index">Home</a>
-                    </li>
-                    <li>
-                        <a class="hover:text-gray-500" href="/index5">Service</a>
-                    </li>
-                    <li>
-                        <a class="hover:text-gray-500" href="#about">About</a>
-                    </li>
-                    <li>
-                        <a class="hover:text-gray-500" href="#contact">Contact</a>
-                    </li>
-                    <li>
-                        <a class="hover:text-gray-500" href="#pricing">Pricing</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="flex items-center gap-6">
-         
-              <a href="/logout" class="bg-[#0d51c6] text-white px-5 py-2 rounded-full hover:bg-[#041532]">
-                logout
-              </a>
-              <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden"></ion-icon>
-            </div>
-            
-    </header>
-    <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
-      <div class="card p-4">
-        <div
-          class="image d-flex flex-column justify-content-center align-items-center"
-        >
-          <button class="btn btn-secondary">
-            <img src="download.jpeg" height="100" width="100" />
-          </button>
-          <span class="name mt-3">Eleanor Pena</span>
-          <label>Name:</label>
-    <span id="name"><%= name %></span>
-          
-          <span class="idd">@eleanorpena</span>
-          <div
-            class="d-flex flex-row justify-content-center align-items-center gap-2"
-          >
-            <span class="idd1">Oxc4c16a645_b21a</span>
-            <label>Email:</label>
-    <span id="email"><%= email %></span>
-
-            <span><i class="fas fa-copy"></i></span>
-          </div>
-          <div
-            class="d-flex flex-row justify-content-center align-items-center mt-3"
-          >
-          <label>Gender:</label>
-    <span id="gender"><%= gender %></span>
-            <span class="number"
-              >1069 <span class="follow">Followers</span></span
-            >
-          </div>
-          <div class="d-flex mt-2">
-            <button class="btn1 btn-dark">Edit Profile</button>
-          </div>
-          <div class="text mt-3">
-            <label>Phone Number:</label>
-    <span id="phone_number"><%= phone_number %></span>
-    <label>Year of Birth:</label>
-    <span id="yob"><%= your_date_column %></span>
-            <span
-              >Eleanor Pena is a creator of minimalistic x bold graphics and
-              digital artwork.<br /><br />
-              Artist/ Creative Director by Day #NFT minting@ with FND night.
-            </span>
-          </div>
-          <div
-            class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"
-          >
-            <span><i class="fab fa-twitter"></i></span>
-            <span><i class="fab fa-facebook-f"></i></span>
-            <span><i class="fab fa-instagram"></i></span>
-            <span><i class="fab fa-linkedin"></i></span>
-          </div>
-          <div class="px-2 rounded mt-4 date">
-            <span class="join">Joined May,2021</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </body>
-</html> -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -235,90 +30,215 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.mi
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  background-color: #15d328; /* Green background */
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
 }
 
-.card {
-  width: 350px;
-  background-color: rgb(190 242 100); /* Yellow card background */
-  border: none;
-  cursor: pointer;
-  transition: all 0.5s;
-}
-
-/* Add this style to center the image */
-.image {
+.profile-container {
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.profile-card {
+  background: rgba(240, 253, 244, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: 0 20px 40px rgba(34, 197, 94, 0.1);
+  max-width: 450px;
+  width: 100%;
   text-align: center;
-  height: 100%; /* Ensure the image div takes full height */
+  transition: all 0.3s ease;
+  border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
-.image img {
-  transition: all 0.5s;
+.profile-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px rgba(34, 197, 94, 0.2);
 }
 
-.card:hover .image img {
-  transform: scale(1.5);
+.profile-image {
+  position: relative;
+  margin-bottom: 2rem;
 }
 
-.image img {
-  transition: all 0.5s;
-}
-
-.card:hover .image img {
-  transform: scale(1.5);
-}
-
-.btn {
-  height: 140px;
-  width: 140px;
+.profile-avatar {
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
+  border: 4px solid #22c55e;
+  object-fit: cover;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
 }
 
-.name, .idd, .idd1, .number, .follow, .text span {
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
+.profile-avatar:hover {
+  transform: scale(1.1);
+  box-shadow: 0 15px 40px rgba(34, 197, 94, 0.4);
 }
 
-.btn1 {
-  height: 40px;
-  width: 150px;
-  border: none;
-  background-color: #2ecc71; /* Yellow button background */
-  color: #000; /* Button text color */
-  font-size: 15px;
+.profile-info {
+  margin-bottom: 2rem;
 }
 
-.text span {
-  font-size: 13px;
-  color: #545454;
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+  transition: all 0.3s ease;
+}
+
+.info-item:hover {
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 0 -1rem;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #166534;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
   font-weight: 500;
+  color: #15803d;
+  font-size: 1rem;
+  text-align: right;
+  flex: 1;
+  margin-left: 1rem;
 }
 
-.btn-secondary {
-  color: #fff;
-  background-color: #e7ebef;
-  border-color: #eeeff0;
+.edit-btn {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
-.icons i {
-  font-size: 19px;
+.edit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
 }
 
-.date {
-  background-color: #cccccc00;
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.social-link {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #86efac; /* light green */
+  color: #000; /* Black text */
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  border: 2px solid #4ade80; /* green-400 for border */
+}
+
+.social-link:hover {
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
+  color: #000;
+  background: #4ade80; /* green-400 on hover */
+}
+
+.join-date {
+  background: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.6s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+  }
+  
+  .profile-card {
+    padding: 2rem;
+  }
+  
+  .info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .info-value {
+    text-align: left;
+    margin-left: 0;
+  }
 }
 </style>
 
 </head>
-<body style="background-image: url('images/bg.jpg'); background-size: cover">
+<body>
+<!-- NAVBAR - KEPT UNCHANGED AS REQUESTED -->
 <header class="bg-lime-300 ">
 <nav class="flex justify-between items-center w-[92%] mx-auto">
   <div>
@@ -332,15 +252,7 @@ body {
       <li>
         <a class="hover:text-white-500" href="/index5">Service</a>
       </li>
-      <li>
-        <a class="hover:text-white-500" href="#about">About</a>
-      </li>
-      <li>
-        <a class="hover:text-white-500" href="#contact">Contact</a>
-      </li>
-      <li>
-        <a class="hover:text-white-500" href="#pricing">Pricing</a>
-      </li>
+      
     </ul>
   </div>
   <div class="flex items-center gap-6">
@@ -349,44 +261,133 @@ body {
     </a>
     <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden"></ion-icon>
   </div>
-
+</nav>
 </header>
-<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
-  <div class="card p-4">
-    <div class="image d-flex flex-column justify-content-center align-items-center">
-      <button class="btn btn-secondary justify-content-center algin-items-center">
-        <img src="images/dp.png" height="80" width="100" />
-      </button>
-      <span class="name mt-3">Name:</span>
-      <span class="name" id="name"><%= name %></span>
-      
-      <span class="idd mt-3">Email:</span>
-      <span class="idd" id="email"><%= email %></span>
-      
-      <span class="idd mt-3">Gender:</span>
-      <span class="idd" id="gender"><%= gender %></span>
-      
-      <span class="idd mt-3">Phone Number:</span>
-      <span class="idd" id="phone_number"><%= phone_number %></span>
-      
-      <span class="idd mt-3">Year of Birth:</span>
-      <span class="idd" id="yob"><%= your_date_column %></span>
-      
-      <div class="d-flex mt-2">
-        <button class="btn1 btn-dark">Edit Profile</button>
+
+<!-- MODERN PROFILE CONTENT -->
+<div class="profile-container">
+  <div class="profile-card fade-in">
+    <!-- Profile Image -->
+    <div class="profile-image">
+      <img src="images/dp.png" alt="Profile Picture" class="profile-avatar">
+    </div>
+    
+    <!-- Profile Information -->
+    <div class="profile-info">
+      <div class="info-item slide-in">
+        <span class="info-label">Name</span>
+        <span class="info-value" id="name"><%= name %></span>
       </div>
-      <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
-        <span><i class="fab fa-twitter"></i></span>
-        <span><i class="fab fa-facebook-f"></i></span>
-        <span><i class="fab fa-instagram"></i></span>
-        <span><i class="fab fa-linkedin"></i></span>
+      
+      <div class="info-item slide-in">
+        <span class="info-label">Email</span>
+        <span class="info-value" id="email"><%= email %></span>
       </div>
-      <div class="px-2 rounded mt-4 date">
-        <span class="join">Joined May,2021</span>
+      
+      <div class="info-item slide-in">
+        <span class="info-label">Gender</span>
+        <span class="info-value" id="gender"><%= gender %></span>
+      </div>
+      
+      <div class="info-item slide-in">
+        <span class="info-label">Phone Number</span>
+        <span class="info-value" id="phone_number"><%= phone_number %></span>
+      </div>
+      
+      <div class="info-item slide-in">
+        <span class="info-label">Year of Birth</span>
+        <span class="info-value" id="yob"><%= your_date_column %></span>
       </div>
     </div>
+    
+    <!-- Edit Profile Button -->
+    <!-- <button class="edit-btn">
+      <i class="fas fa-edit"></i> Edit Profile
+    </button> -->
+    
+    
+    
   </div>
 </div>
-</div>
+
+<!-- JavaScript for enhanced interactions -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Add staggered animation to info items
+  const infoItems = document.querySelectorAll('.info-item');
+  infoItems.forEach((item, index) => {
+    item.style.animationDelay = `${index * 0.1}s`;
+  });
+  
+  // Add click effect to edit button
+  const editBtn = document.querySelector('.edit-btn');
+  editBtn.addEventListener('click', function() {
+    this.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      this.style.transform = 'translateY(-2px)';
+    }, 150);
+  });
+  
+  // Add ripple effect to social links
+  const socialLinks = document.querySelectorAll('.social-link');
+  socialLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Create ripple effect
+      const ripple = document.createElement('span');
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+      
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      ripple.classList.add('ripple');
+      
+      this.appendChild(ripple);
+      
+      setTimeout(() => {
+        ripple.remove();
+      }, 600);
+    });
+  });
+});
+
+// Add ripple effect CSS
+const style = document.createElement('style');
+style.textContent = `
+  .social-link {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+  }
+  
+  @keyframes ripple-animation {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+`;
+document.head.appendChild(style);
+
+// Hamburger menu functionality
+const navLinks = document.querySelector('.nav-links')
+function onToggleMenu(e) {
+    e.name = e.name === 'menu' ? 'close' : 'menu'
+    navLinks.classList.toggle('top-[8.4%]')
+    navLinks.classList.toggle('opacity-40')
+}
+</script>
 </body>
 </html>

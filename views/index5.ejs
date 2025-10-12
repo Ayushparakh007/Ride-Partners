@@ -3,205 +3,526 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ride Partner - Online Booking</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
     <style>
-        body {
-  font-family: system-ui;
-  text-align: center;
+        * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-header {
-  position: fixed;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: #bef264; /* lime-300 to match index.ejs */
+            padding: 1rem 0;
+            position: sticky;
   top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #000;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #666;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
   left: 0;
-  height: 10vh;
-  display: flex;
-background-color: rgb(127, 255, 127);
+            background-color: #22c55e;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
   width: 100%;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-}
-a {
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
   color: white;
 }
 
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #166534; /* Dark green */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
 
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #166534; /* Dark green */
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-.container {
-    max-height: 100vh;
-    overflow: auto;
-    padding-top: 80px;
-}
+        .booking-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
 
-h2 {
-    font-size: xx-large;
-    color: black;
-}
+        .booking-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
 
-p {
-    font-size: x-large;
-    color: black;
-}
-section {
+        .booking-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .booking-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
   position: relative;
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f0fdf4;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group i {
+            position: absolute;
+            right: 1rem;
+            top: 2.5rem;
+            color: #667eea;
+        }
+
+        .submit-btn {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   color: white;
-}
+            border: none;
+            padding: 1.2rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-#section-1 {
-  background: white;
-}
-#section-2 {
-  background: yellow;
-}
-#section-3 {
-  background: lightskyblue;
-}
-#section-4 {
-  background: black;
-}
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
 
-.navbar {
-    background-color: rgb(127, 255, 127);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60px;
-}
+        .features-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
 
-.navbar a {
-    color: black;
-    text-decoration: none;
-    margin: 0 20px;
-    transition: color 0.3s;
-}
+        .feature-card {
+            background: #f0fdf4; /* Light green background */
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.1);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
 
-.navbar a:hover {
-    color: #f27541;
-}
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
 
+        .feature-icon {
+            font-size: 3rem;
+            color: #22c55e; /* Green color */
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #166534; /* Dark green */
+        }
+
+        .feature-description {
+            color: #15803d; /* Medium green */
+            line-height: 1.6;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: #dcfce7;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #fef2f2;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .booking-container {
+                padding: 2rem 1rem;
+            }
+            
+            .booking-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <a href="#section-1">Rapid city transfer</a>
-            <a href="#section-2">Online Booking</a>
-            <a href="#section-3">Airport Transport</a>
-        </nav>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div>
+                <a href="/index">
+                    <img class="w-12 cursor-pointer rounded-2xl pt-1 pb-1" src="images/header1.png" alt="...">
+                  </a>
+                  
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/index">Home</a></li>
+                    <li><a href="/profile">Profile</a></li>
+                </ul>
+            </nav>
+            <div class="flex items-center gap-6">
+                <a href="/logout" class="bg-[#0d51c6] text-white px-5 py-2 rounded-full hover:bg-[#041532]">
+                    logout
+                </a>
+               
+
+            </div>
+        </div>
       </header>
-      <section id="section-1" class="panel">
-        <div class="container">
-            <h2>Rapid City Transfer</h2>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="hero-title">Book Your Perfect Ride</h1>
+            <p class="hero-subtitle">Professional transportation services with modern vehicles and experienced drivers. Book your ride in just a few clicks!</p>
+        </div>
+
+        <!-- Booking Section -->
+        <div class="booking-container" id="booking">
+            <h2 class="booking-title">🚗 Online Booking</h2>
+            <p class="booking-subtitle">Fill out the form below to book your ride. We'll contact you to confirm the details.</p>
             
-            <p>With a fleet of modern vehicles and experienced drivers, we specialize in providing rapid city transfers, airport transportation, and a range of other transportation services to meet your needs.</p>
-            <p>Our commitment to reliability, professionalism, and customer satisfaction sets us apart in the industry. Whether you need a ride to the airport, transportation for a corporate event, or a sightseeing tour of the city, Ride partner has you covered.</p>
+            <!-- Success/Error Messages -->
+            <% if (typeof booking !== 'undefined') { %>
+                <% if (booking === 'success') { %>
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> Booking request submitted successfully! We'll contact you soon to confirm your ride.
+                    </div>
+                <% } else if (booking === 'error') { %>
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i> Error submitting booking. Please try again or contact us directly.
+                    </div>
+                <% } %>
+            <% } %>
+            
+            <!-- Booking Form -->
+            <form class="booking-form" action="/book" method="post">
+                <div class="form-group">
+                    <label for="pickup">
+                        <i class="fas fa-map-marker-alt"></i> Pickup Location
+                    </label>
+                    <input type="text" id="pickup" name="pickup" placeholder="Enter pickup address" required>
+                    <i class="fas fa-location-dot"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="destination">
+                        <i class="fas fa-flag-checkered"></i> Destination
+                    </label>
+                    <input type="text" id="destination" name="destination" placeholder="Enter destination address" required>
+                    <i class="fas fa-map-pin"></i>
         </div>
        
-      </section>
-      <section id="section-2" class="panel">
-        <div>
-        <h2>Online Booking</h2>
-        <p>Book your ride conveniently online!</p>
-        <form  style="color: black;" action="/book" method="post">
-          <label for="pickup">Pickup Location:</label>
-          <input type="text" id="pickup" name="pickup" required>
-          <label for="destination">Destination:</label>
-          <input type="text" id="destination" name="destination" required>
-          <label for="date">Date:</label>
+                <div class="form-group">
+                    <label for="date">
+                        <i class="fas fa-calendar"></i> Travel Date
+                    </label>
           <input type="date" id="date" name="date" required>
-          <button type="submit">Book Now</button>
+                    <i class="fas fa-calendar-days"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="time">
+                        <i class="fas fa-clock"></i> Preferred Time
+                    </label>
+                    <input type="time" id="time" name="time" required>
+                    <i class="fas fa-clock"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="passengers">
+                        <i class="fas fa-users"></i> Number of Passengers
+                    </label>
+                    <select id="passengers" name="passengers" required>
+                        <option value="">Select passengers</option>
+                        <option value="1">1 Passenger</option>
+                        <option value="2">2 Passengers</option>
+                        <option value="3">3 Passengers</option>
+                        <option value="4">4 Passengers</option>
+                        <option value="5+">5+ Passengers</option>
+                    </select>
+                    <i class="fas fa-user-group"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="vehicle">
+                        <i class="fas fa-car-side"></i> Vehicle Type
+                    </label>
+                    <select id="vehicle" name="vehicle" required>
+                        <option value="">Select vehicle type</option>
+                        <option value="sedan">Sedan (1-4 passengers)</option>
+                        <option value="suv">SUV (1-6 passengers)</option>
+                        <option value="van">Van (1-8 passengers)</option>
+                        <option value="luxury">Luxury Vehicle</option>
+                    </select>
+                    <i class="fas fa-car"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">
+                        <i class="fas fa-phone"></i> Contact Number
+                    </label>
+                    <input type="tel" id="phone" name="phone" placeholder="Your phone number" required>
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                
+                <!-- Show contact fields for guest users -->
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <input type="email" id="email" name="email" placeholder="Your email address" required>
+                    <i class="fas fa-envelope"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="name">
+                        <i class="fas fa-user"></i> Full Name
+                    </label>
+                    <input type="text" id="name" name="name" placeholder="Your full name" required>
+                    <i class="fas fa-user"></i>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">
+                        <i class="fas fa-sticky-note"></i> Special Instructions
+                    </label>
+                    <textarea id="notes" name="notes" rows="3" placeholder="Any special requirements or notes..."></textarea>
+                    <i class="fas fa-comment"></i>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Book My Ride
+                </button>
         </form>
     </div>
-      </section>
-      <section id="section-3" class="panel">
-        <div>
-        <h2>Airport Transport</h2>
-        <p>We offer reliable airport transportation services.</p>
-        <p>Contact us for airport pickups and drop-offs!</p>
-      </section>
-      <!-- <section id="section-4" class="panel">
-        <div>
-          <p>Something nice 4</p>
+
+        <!-- Features Section -->
+        <div class="features-section" id="services">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3 class="feature-title">24/7 Service</h3>
+                <p class="feature-description">Round-the-clock availability for all your transportation needs, whether it's early morning or late night.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">Safe & Reliable</h3>
+                <p class="feature-description">Professional drivers with clean records and well-maintained vehicles for your safety and comfort.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <h3 class="feature-title">Competitive Pricing</h3>
+                <p class="feature-description">Transparent pricing with no hidden fees. Get the best value for your money with our competitive rates.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-plane"></i>
+                </div>
+                <h3 class="feature-title">Airport Transfers</h3>
+                <p class="feature-description">Specialized airport pickup and drop-off services with flight tracking for timely arrivals.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-city"></i>
+                </div>
+                <h3 class="feature-title">City Tours</h3>
+                <p class="feature-description">Explore the city with our knowledgeable drivers who know all the best routes and attractions.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3 class="feature-title">24/7 Support</h3>
+                <p class="feature-description">Our customer support team is always ready to help with any questions or concerns you may have.</p>
+            </div>
         </div>
     </div>
-      </section> -->
-      <script src="https://unpkg.com/split-type"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
 
+    <!-- JavaScript for enhanced user experience -->
       <script>
-        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-
-ScrollTrigger.defaults({
-  toggleActions: "play none none reverse",
-  // markers: true
-});
-
-gsap.utils.toArray(".panel").forEach((panel, i) => {
-  ScrollTrigger.create({
-    trigger: panel,
-    start: "top top",
-    end: "+=100%",
-    pin: true, 
-    pinSpacing: false,
-    scrub: 1,
-    snap: {
-       snapTo: 1,
-       duration: {min: 0.5, max: 0.5}
-    }
-  });
-});
-document.addEventListener("DOMContentLoaded", function() {
-  gsap.utils.toArray("navbar a").forEach(function(a) {
-    a.addEventListener("click", function(e) {
-      e.preventDefault();
-      var targetSection = document.querySelector(e.target.getAttribute("href"));
-      var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      var targetOffset = targetSection.offsetTop;
-      var scrollDirection = targetOffset > scrollTop ? 1 : -1;
-      
-      gsap.to(window, {
-        duration: 1, 
-        scrollTo: { 
-          y: targetOffset, 
-          offsetY: 100, 
-          autoKill: false, 
-          direction: scrollDirection
-        },
-        onComplete: function() {
-          // If scrolling downwards and the target section is "Rapid City Transfer", scroll to "Online Booking"
-          if (scrollDirection === 1 && targetSection.id === "section-1") {
-            var bookingSection = document.querySelector("#section-2");
-            var bookingOffset = bookingSection.offsetTop;
-            gsap.to(window, {duration: 1, scrollTo: {y: bookingOffset, offsetY: 100}});
-          }
-        }
-      });
-    });
-  });
-});
-
-
-
-      </script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-     <script>
-         gsap.from('.navbar a', {
-             opacity: 0,
-             y: -20,
-             duration: 0.5,
-             stagger: 0.2,
-             ease: 'power2.out',
+        // Set minimum date to today
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.getElementById('date');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.min = today;
+            
+            // Auto-focus on first input
+            document.getElementById('pickup').focus();
+            
+            // Form validation
+            const form = document.querySelector('.booking-form');
+            form.addEventListener('submit', function(e) {
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.style.borderColor = '#dc3545';
+                        isValid = false;
+                    } else {
+                        field.style.borderColor = '#e1e5e9';
+                    }
+                });
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    alert('Please fill in all required fields.');
+                }
+            });
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                 });
+             });
          });
+
      </script>
-</body>
-</html>
+ </body>
+ </html>

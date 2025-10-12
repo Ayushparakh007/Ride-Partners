@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Booking Requests</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .booking-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .booking-id {
+            font-weight: bold;
+            color: #666;
+        }
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status.confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status.cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .detail-value {
+            color: #333;
+            font-size: 14px;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .btn-confirm {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .no-bookings {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e1e5e9;
+        }
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .admin-welcome {
+            color: #666;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+            color: white;
+        }
+        .refresh-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .refresh-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <div class="header-content">
+                <h1>🚗 Admin Dashboard - Booking Requests</h1>
+                <div class="admin-info">
+                    <span class="admin-welcome">Welcome, <%= user ? user.full_name || user.username : 'Admin' %></span>
+                    <a href="/admin-logout" class="logout-btn">🚪 Logout</a>
+                </div>
+            </div>
+            <button class="refresh-btn" onclick="loadBookings()">🔄 Refresh</button>
+        </div>
+        <div id="bookings-container">
+            <div class="no-bookings">Loading bookings...</div>
+        </div>
+    </div>
+
+    <script>
+        async function loadBookings() {
+            try {
+                const response = await fetch('/bookings');
+                const bookings = await response.json();
+                
+                const container = document.getElementById('bookings-container');
+                
+                if (bookings.length === 0) {
+                    container.innerHTML = '<div class="no-bookings">No booking requests found.</div>';
+                    return;
+                }
+                
+                container.innerHTML = bookings.map(booking => `
+                    <div class="booking-card" data-booking-id="${booking.id}">
+                        <div class="booking-header">
+                            <span class="booking-id">Booking #${booking.id}</span>
+                            <span class="status ${booking.status}">${booking.status}</span>
+                        </div>
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <span class="detail-label">From</span>
+                                <span class="detail-value">${booking.pickup_location}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">To</span>
+                                <span class="detail-value">${booking.destination}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Date</span>
+                                <span class="detail-value">${new Date(booking.booking_date).toLocaleDateString()}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Customer</span>
+                                <span class="detail-value">${booking.user_name || 'Guest'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Email</span>
+                                <span class="detail-value">${booking.user_email || 'N/A'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Phone</span>
+                                <span class="detail-value">${booking.user_phone || 'N/A'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Requested</span>
+                                <span class="detail-value">${new Date(booking.created_at).toLocaleString()}</span>
+                            </div>
+                        </div>
+                        ${booking.status === 'pending' ? `
+                            <div class="actions">
+                                <button class="btn btn-confirm" onclick="updateBooking(${booking.id}, 'confirmed')">
+                                    ✅ Confirm
+                                </button>
+                                <button class="btn btn-cancel" onclick="updateBooking(${booking.id}, 'cancelled')">
+                                    ❌ Cancel
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                document.getElementById('bookings-container').innerHTML = 
+                    '<div class="no-bookings">Error loading bookings. Please try again.</div>';
+            }
+        }
+        
+        async function updateBooking(id, status) {
+            try {
+                // Just update the UI without sending to database
+                const bookingCard = document.querySelector(`[data-booking-id="${id}"]`);
+                if (bookingCard) {
+                    const statusElement = bookingCard.querySelector('.status');
+                    if (statusElement) {
+                        statusElement.textContent = status;
+                        statusElement.className = `status ${status}`;
+                    }
+                    
+                    // Hide the action buttons after status change
+                    const actionsDiv = bookingCard.querySelector('.actions');
+                    if (actionsDiv) {
+                        actionsDiv.style.display = 'none';
+                    }
+                }
+                
+                // Show success message
+                const action = status === 'confirmed' ? 'confirmed' : 'cancelled';
+                alert(`Booking ${action} successfully!`);
+                
+            } catch (error) {
+                console.error('Error updating booking:', error);
+                alert('Error updating booking status');
+            }
+        }
+        
+        // Load bookings when page loads
+        loadBookings();
+    </script>
+</body>
+</html>
+
