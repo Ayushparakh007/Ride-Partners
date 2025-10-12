@@ -683,34 +683,109 @@ app.get("/profile", (req, res) => {
       res.redirect("/sign");
     }
   });
-  app.get("/sign", async (req, res) => {
-    console.log(req.user);
-  
-    ////////////////UPDATED GET SECRETS ROUTE/////////////////
-    if (req.isAuthenticated()) {
-      try {
-        const result = await db.query(
-          `SELECT secret FROM users WHERE email = $1`,
-          [req.user.email]
-        );
-        console.log(result);
-        const secret = result.rows[0].secret;
-        if (secret) {
-          res.render("profile.ejs", {   name: name1,
-            email: email,
-            phone_number: phone_number,
-            gender: gender,
-            your_date_column: your_date_column, });
-        } else {
-          res.render("profile.ejs");
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      res.redirect("/sign");
+  // Add this function with your other table creation functions:
+
+// Create users table if it doesn't exist
+const createUsersTable = async () => {
+    try {
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                name1 VARCHAR(255),
+                phone_number VARCHAR(20),
+                gender VARCHAR(50),
+                your_date_column VARCHAR(10),
+                secret TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log("Users table created or already exists");
+    } catch (err) {
+        console.error("Error creating users table:", err);
     }
-  });
+};
+
+// Call all table creation functions:
+createBookingsTable();
+createAdminTable();
+createBookingStatusTable();
+createUsersTable(); // ADD THIS
+
+// ===== FIXED ROUTES =====
+
+// Simple /sign GET route (keep only this one, remove the duplicate)
+app.get("/sign", (req, res) => {
+    if (req.isAuthenticated()) {
+        return res.redirect("/profile");
+    }
+    res.render("sign.ejs");
+});
+
+// Fixed signup POST route
+app.post("/signup", async (req, res) => {
+    const email = req.body.username;
+    const password = req.body.password;
+    const name1 = req.body.givenName;
+    const phone_number = req.body.contactNumber;
+    const gender = req.body.gender;
+    const your_date_column = req.body.yob;
+
+    try {
+        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+  
+        if (checkResult.rows.length > 0) {
+            return res.redirect("/signup?error=email_exists");
+        }
+        
+        const hash = await bcrypt.hash(password, saltRounds);
+        const result = await db.query(
+            "INSERT INTO users (email, password, name1, phone_number, gender, your_date_column) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+            [email, hash, name1, phone_number, gender, your_date_column]
+        );
+        
+        const user = result.rows[0];
+        
+        // Log the user in after signup
+        req.login(user, (err) => {
+            if (err) {
+                console.error("Error during login after signup:", err);
+                return res.redirect("/signup?error=login_failed");
+            }
+            console.log("User signed up and logged in:", user.email);
+            return res.redirect("/profile");
+        });
+        
+    } catch (err) {
+        console.error("Signup error:", err);
+        res.redirect("/signup?error=server_error");
+    }
+});
+
+// Profile route (already correct)
+app.get("/profile", (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render("profile.ejs", {
+            name: req.user.name1,
+            email: req.user.email,
+            phone_number: req.user.phone_number,
+            gender: req.user.gender,
+            your_date_column: req.user.your_date_column
+        });
+    } else {
+        res.redirect("/sign");
+    }
+});
+
+// Login POST route (already correct)
+app.post(
+    "/sign",
+    passport.authenticate("local", {
+        successRedirect: "/profile",
+        failureRedirect: "/sign",
+    })
+);
   
 
 
@@ -724,42 +799,7 @@ app.get("/profile", (req, res) => {
     })
   );
 
-app.post("/signup", async (req, res) => {
-    const email = req.body.username;
-    const password = req.body.password;
-    const name1 = req.body.givenName;
-    const phone_number = req.body.contactNumber;
-    const gender = req.body.gender;
-    const your_date_column = req.body.yob;
 
-    try {
-        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
-  
-        if (checkResult.rows.length > 0) {
-            res.send("Email already exists. Try logging in.");
-        } else {
-            bcrypt.hash(password, saltRounds, async (err, hash) => {
-                if (err) {
-                    console.error("Error hashing password:", err);
-                } else {
-                    await db.query(
-                        "INSERT INTO users (email, password,name1,phone_number,gender,your_date_column) VALUES ($1, $2,$3,$4,$5,$6)",
-                        [email, hash,name1,phone_number,gender,your_date_column]
-                    );
-                    res.render("profile.ejs", {
-                        name: name1,
-                        email: email,
-                        phone_number: phone_number,
-                        gender: gender,
-                        your_date_column: your_date_column,
-                    });
-                }
-            });
-        }
-    } catch (err) {
-        console.log(err);
-    }
-});
 
 
     passport.use(
