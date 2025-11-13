@@ -271,30 +271,7 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="nav-container">
-            <div>
-                <a href="/index">
-                    <img class="w-12 cursor-pointer rounded-2xl pt-1 pb-1" src="images/header1.png" alt="...">
-                  </a>
-                  
-            </div>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="/index">Home</a></li>
-                    <li><a href="/profile">Profile</a></li>
-                </ul>
-            </nav>
-            <div class="flex items-center gap-6">
-                <a href="/logout" class="bg-[#0d51c6] text-white px-5 py-2 rounded-full hover:bg-[#041532]">
-                    logout
-                </a>
-               
-
-            </div>
-        </div>
-      </header>
+<%- include('partials/navbar') %>
 
     <!-- Main Content -->
     <div class="main-container">

@@ -1,0 +1,65 @@
+<header class="bg-lime-300/95 backdrop-blur sticky top-0 z-50 shadow-sm border-b border-lime-200">
+  <nav class="flex justify-between items-center w-[92%] mx-auto py-3">
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+      <a href="/index" aria-label="Ride Partner home">
+        <img class="w-12 h-12 object-cover rounded-2xl" src="images/header1.png" alt="Ride Partner" />
+      </a>
+      <span class="hidden sm:inline text-sm font-semibold text-gray-800">Ride Partner</span>
+    </div>
+
+    <!-- Links -->
+    <div class="nav-links duration-300 md:static absolute md:bg-transparent bg-lime-300 md:min-h-fit min-h-[60vh] left-0 right-0 top-[-100%] md:w-auto w-full flex md:items-center items-start px-5 md:px-0 md:opacity-100 opacity-0">
+      <ul class="flex md:flex-row flex-col md:items-center md:gap-8 gap-6 py-6 md:py-0">
+        <li><a class="nav-link hover:text-gray-700" href="/index">Home</a></li>
+        <li><a class="nav-link hover:text-gray-700" href="/index5">Book a Ride</a></li>
+        <li><a class="nav-link hover:text-gray-700" href="/view-bookings">Find Rides</a></li>
+        <li><a class="nav-link hover:text-gray-700" href="/my-bookings">My Bookings</a></li>
+        <li><a class="nav-link hover:text-gray-700" href="/my-requests">My Requests</a></li>
+        <li><a class="nav-link hover:text-gray-700" href="/profile">Profile</a></li>
+        <li class="md:hidden"><a class="inline-block bg-[#0d51c6] text-white px-5 py-2 rounded-full hover:bg-[#041532]" href="/logout">Logout</a></li>
+      </ul>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-3">
+      <a href="/logout" class="hidden md:inline-block bg-[#0d51c6] text-white px-5 py-2 rounded-full hover:bg-[#041532]">Logout</a>
+      <button type="button" class="md:hidden p-2 rounded-md focus:outline-none" aria-label="Toggle navigation" onclick="onToggleMenu(this)">
+        <ion-icon name="menu" class="text-3xl text-black"></ion-icon>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Ionicons (for hamburger) -->
+  <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+  <script>
+    (function(){
+      const headerEl = document.currentScript.closest('header');
+      const navLinksEl = headerEl.querySelector('.nav-links');
+      const links = headerEl.querySelectorAll('.nav-link');
+
+      // Active link highlight based on current path
+      const path = location.pathname.replace(/\/$/, '');
+      links.forEach(a => {
+        const href = a.getAttribute('href');
+        if (!href) return;
+        const normalized = href.replace(/\/$/, '');
+        if (normalized === path) {
+          a.classList.add('text-gray-900','font-semibold');
+        }
+      });
+
+      // Expose toggle for hamburger
+      window.onToggleMenu = function(btn){
+        try {
+          const icon = btn.querySelector('ion-icon');
+          if (icon) icon.setAttribute('name', icon.getAttribute('name') === 'menu' ? 'close' : 'menu');
+          navLinksEl.classList.toggle('top-[72px]');
+          navLinksEl.classList.toggle('opacity-100');
+        } catch (e) {
+          // no-op
+        }
+      }
+    })();
+  </script>
+</header>

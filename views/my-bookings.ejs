@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .booking-card {
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+        .booking-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .join-request {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .join-request:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge-accepted {
+            background: #d1fae5;
+            color: #065f46;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+<%- include('partials/navbar') %>
+
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">My Ride Bookings</h1>
+            <p class="text-xl text-gray-600">Manage your bookings and respond to join requests</p>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="flex justify-center items-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+
+        <!-- Bookings Container -->
+        <div id="bookings-container" style="display:none;">
+            <!-- Bookings will be loaded here -->
+        </div>
+
+        <!-- No Bookings Message -->
+        <div id="no-bookings" class="text-center py-12" style="display:none;">
+            <p class="text-xl text-gray-600 mb-4">You haven't created any bookings yet.</p>
+            <a href="/index5" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg inline-block">Create a Booking</a>
+        </div>
+    </div>
+
+    <!-- Request Response Modal -->
+    <div id="responseModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-4">Respond to Join Request</h2>
+            
+            <div id="requestDetails" class="bg-gray-50 p-4 rounded-lg mb-6">
+                <!-- Request details will be shown here -->
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="acceptRequest()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold">
+                    Accept
+                </button>
+                <button onclick="rejectRequest()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold">
+                    Reject
+                </button>
+            </div>
+            <button onclick="closeModal()" class="w-full mt-3 bg-gray-400 hover:bg-gray-500 text-white py-2 rounded-lg font-semibold">
+                Cancel
+            </button>
+            <div id="responseMessage" class="mt-4 p-3 rounded-lg text-center" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentRequestId = null;
+        let currentBookingId = null;
+
+        // Load bookings on page load
+        async function loadBookings() {
+            try {
+                const userEmail = '<%= user.email %>';
+                const response = await fetch(`/api/my-bookings?email=${encodeURIComponent(userEmail)}`);
+                const result = await response.json();
+
+                const container = document.getElementById('bookings-container');
+                const loading = document.getElementById('loading');
+                const noBookings = document.getElementById('no-bookings');
+
+                loading.style.display = 'none';
+
+                if (result.success && result.data.length > 0) {
+                    container.style.display = 'block';
+                    container.innerHTML = result.data.map(booking => `
+                        <div class="booking-card bg-white rounded-lg p-6 shadow-md mb-8">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-gray-800">
+                                        <i class="fas fa-location-dot text-red-500 mr-2"></i>${booking.pickup_location}
+                                        <i class="fas fa-arrow-right mx-2 text-gray-400"></i>
+                                        ${booking.destination}
+                                    </h3>
+                                    <p class="text-gray-600 mt-2">
+                                        <i class="fas fa-calendar mr-2"></i>${new Date(booking.booking_date).toLocaleDateString()}
+                                        <span class="mx-2">•</span>
+                                        <i class="fas fa-clock mr-2"></i>${booking.booking_time || 'Not specified'}
+                                    </p>
+                                </div>
+                                <span class="badge badge-${booking.status} px-4 py-2 rounded-full text-sm font-semibold">
+                                    ${booking.status.toUpperCase()}
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 mb-6 text-gray-600">
+                                <p><strong>Passengers:</strong> ${booking.passengers || 'Not specified'}</p>
+                                <p><strong>Vehicle:</strong> ${booking.vehicle_type || 'Not specified'}</p>
+                            </div>
+
+                            ${booking.join_requests && booking.join_requests.length > 0 ? `
+                                <div class="mb-6">
+                                    <h4 class="text-lg font-bold text-gray-800 mb-4">Join Requests (${booking.join_requests.length})</h4>
+                                    <div class="space-y-3">
+                                        ${booking.join_requests.map(req => `
+                                            <div class="join-request p-4 flex justify-between items-start">
+                                                <div>
+                                                    <p class="font-semibold text-gray-800">${req.requester_name}</p>
+                                                    <p class="text-sm text-gray-600"><i class="fas fa-envelope mr-2"></i>${req.requester_email}</p>
+                                                    <p class="text-sm text-gray-600"><i class="fas fa-phone mr-2"></i>${req.requester_phone}</p>
+                                                    ${req.message ? `<p class="text-sm text-gray-700 mt-2 italic">"${req.message}"</p>` : ''}
+                                                    <p class="text-xs text-gray-500 mt-2">Requested: ${new Date(req.created_at).toLocaleDateString()}</p>
+                                                </div>
+                                                <div class="flex flex-col gap-2">
+                                                    <span class="badge badge-${req.status} px-3 py-1 rounded text-xs font-semibold">
+                                                        ${req.status.toUpperCase()}
+                                                    </span>
+                                                    ${req.status === 'pending' ? `
+                                                        <button onclick="openModal(${req.id}, ${booking.id}, '${req.requester_name}', '${req.requester_email}', '${req.requester_phone}')"
+                                                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-semibold">
+                                                            Respond
+                                                        </button>
+                                                    ` : ''}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : '<p class="text-gray-500 italic">No join requests yet</p>'}
+                        </div>
+                    `).join('');
+                } else {
+                    noBookings.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading bookings:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('no-bookings').style.display = 'block';
+                document.getElementById('no-bookings').innerHTML = '<p class="text-red-600 text-xl">Error loading bookings</p>';
+            }
+        }
+
+        function openModal(requestId, bookingId, name, email, phone) {
+            currentRequestId = requestId;
+            currentBookingId = bookingId;
+            
+            document.getElementById('requestDetails').innerHTML = `
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Phone:</strong> ${phone}</p>
+            `;
+            
+            document.getElementById('responseMessage').style.display = 'none';
+            document.getElementById('responseModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('responseModal').classList.add('hidden');
+            currentRequestId = null;
+            currentBookingId = null;
+        }
+
+        async function acceptRequest() {
+            await respondToRequest('accepted');
+        }
+
+        async function rejectRequest() {
+            await respondToRequest('rejected');
+        }
+
+        async function respondToRequest(status) {
+            try {
+                const response = await fetch('/api/join-request-response', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        request_id: currentRequestId,
+                        status: status
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const msgDiv = document.getElementById('responseMessage');
+                    msgDiv.textContent = `Request ${status} successfully!`;
+                    msgDiv.className = 'p-3 rounded-lg text-center bg-green-100 text-green-700';
+                    msgDiv.style.display = 'block';
+
+                    setTimeout(() => {
+                        closeModal();
+                        loadBookings();
+                    }, 1500);
+                } else {
+                    const msgDiv = document.getElementById('responseMessage');
+                    msgDiv.textContent = 'Error: ' + result.message;
+                    msgDiv.className = 'p-3 rounded-lg text-center bg-red-100 text-red-700';
+                    msgDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const msgDiv = document.getElementById('responseMessage');
+                msgDiv.textContent = 'An error occurred. Please try again.';
+                msgDiv.className = 'p-3 rounded-lg text-center bg-red-100 text-red-700';
+                msgDiv.style.display = 'block';
+            }
+        }
+
+        // Load bookings when page loads
+        window.addEventListener('load', loadBookings);
+
+        // Close modal when clicking outside
+        document.getElementById('responseModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

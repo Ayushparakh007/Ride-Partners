@@ -90,44 +90,7 @@
 </div>
  </div>
 <body class="font-[Poppins]  h-screen">
-   <!-- Navbar -->
-    <header class="bg-lime-300 ">
-        <nav class="flex justify-between items-center w-[92%]   mx-auto">
-            <div>
-                <img class="w-12 cursor-pointer  rounded-2xl	pt-1 pb-1	" src="images/header1.png"
-                    alt="...">
-            </div>
-            <div
-                class="nav-links duration-500 md:static absolute bg-lime-300 md:min-h-fit min-h-[60vh] left-0 right-0 top-[-100%] md:w-auto  w-full flex items-center px-5">
-                <ul class="flex md:flex-row flex-col md:items-center md:gap-[4vw]  gap-8">
-                    <li>
-                        <a class="hover:text-gray-500" href="/profile">Profile</a>
-                    </li>
-                    <li>
-                        <a class="hover:text-gray-500" href="/index5">Service</a>
-                    </li>
-                    <li>
-                        <a class="hover:text-gray-500" href="#about">About</a>
-                    </li>
-                    <li>
-                        <a class="hover:text-gray-500" href="#contact">Contact</a>
-                    </li>
-                    <li>
-                        <a class="hover:text-gray-500" href="#pricing">Pricing</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="flex items-center gap-6">
-             
-             
-              <a href="/logout" class="bg-[#0d51c6] text-white px-5 py-2 rounded-full hover:bg-[#041532]">
-                logout
-              </a>
-           
-              <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden text-black"></ion-icon>
-            </div>
-            
-    </header>
+<%- include('partials/navbar') %>
    
    
     <!-- background image for homepage  -->
@@ -335,39 +298,32 @@
 <!-- contact information for the ride partner -->
    
   </article>
-  <section id="pricing">
+  <section id="booking">
   <div class="container5">
-    <div class="pricing-table">
-        <div class=" item5 pricing-card">
-            <h3>Hatchback</h3>
-            <div class="price">700 </div>
-            <ul class="features">
-                <li>Practical and compact design, ideal for city driving and tight parking spaces.</li>
-               
-              
-                
-            </ul>
-            <a href="/index5" class="button">Buy Now</a>
+    <div class="pricing-table grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="item5 pricing-card bg-white rounded-lg p-6 shadow-md text-center hover:shadow-lg transition">
+            <i class="fas fa-plus text-blue-600 text-3xl mb-4 block"></i>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Book a Ride</h3>
+            <p class="text-center text-gray-600 mb-6 text-sm">Create a new booking and start your journey</p>
+            <a href="/index5" class="button w-full text-center block py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">Go</a>
         </div>
-        <div class=" item5  pricing-card">
-            <h3>Sedan</h3>
-            <div class="price">1000</div>
-            <ul class="features">
-                
-                <li>Comfort and Ride Quality</li>
-                <li>Spacious Interior</li>
-              
-            </ul>
-            <a href="/index5" class="button">Buy Now</a>
+        <div class="item5 pricing-card bg-white rounded-lg p-6 shadow-md text-center hover:shadow-lg transition">
+            <i class="fas fa-search text-green-600 text-3xl mb-4 block"></i>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Find Rides</h3>
+            <p class="text-center text-gray-600 mb-6 text-sm">Browse all available bookings from other users</p>
+            <a href="/view-bookings" class="button w-full text-center block py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition">Go</a>
         </div>
-        <div class=" item5 pricing-card">
-            <h3>Suv</h3>
-            <div class="price">1300</div>
-            <ul class="  features">
-                <li>Roomy interiors, accommodating six to seven adults comfortably.</li>
-               
-            </ul>
-            <a href="/index5" class="button">Buy Now</a>
+        <div class="item5 pricing-card bg-white rounded-lg p-6 shadow-md text-center hover:shadow-lg transition">
+            <i class="fas fa-calendar-check text-purple-600 text-3xl mb-4 block"></i>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">My Bookings</h3>
+            <p class="text-center text-gray-600 mb-6 text-sm">Manage your bookings and join requests</p>
+            <a href="/my-bookings" class="button w-full text-center block py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition">Go</a>
+        </div>
+        <div class="item5 pricing-card bg-white rounded-lg p-6 shadow-md text-center hover:shadow-lg transition">
+            <i class="fas fa-handshake text-orange-600 text-3xl mb-4 block"></i>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">My Requests</h3>
+            <p class="text-center text-gray-600 mb-6 text-sm">Track the status of your join requests</p>
+            <a href="/my-requests" class="button w-full text-center block py-3 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition">Go</a>
         </div>
     </div>
 </div>
@@ -592,10 +548,7 @@ document.addEventListener(
         
         scrollTrigger: {
           trigger: '[animate1]',
-          start: 'top center',
-          markers: true
-         
-          
+          start: 'top center'
         }
       })
       </script>
@@ -660,14 +613,6 @@ document.addEventListener('DOMContentLoaded', function() {
         hiddenElements.forEach((el) => observer.observe(el));
     </script>
 <!-- script for the hamburger mneu -->
-    <script>
-        const navLinks = document.querySelector('.nav-links')
-        function onToggleMenu(e) {
-            e.name = e.name === 'menu' ? 'close' : 'menu'
-            navLinks.classList.toggle('top-[8.4%]')
-            navLinks.classList.toggle('opacity-40')
-        }
-    </script>
     <!-- script for the smootness of the page -->
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.38/dist/lenis.min.js"></script>
     <script>

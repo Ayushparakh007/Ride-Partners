@@ -239,30 +239,7 @@ body {
 </head>
 <body>
 <!-- NAVBAR - KEPT UNCHANGED AS REQUESTED -->
-<header class="bg-lime-300 ">
-<nav class="flex justify-between items-center w-[92%] mx-auto">
-  <div>
-    <img class="w-12 cursor-pointer rounded-2xl pt-1 pb-1 " src="images/header1.png" alt="...">
-  </div>
-  <div class="nav-links duration-500 md:static absolute bg-lime-300 md:min-h-fit min-h-[60vh] left-0 right-0 top-[-100%] md:w-auto w-full flex items-center px-5">
-    <ul class="flex md:flex-row flex-col md:items-center md:gap-[4vw] gap-8">
-      <li>
-        <a class="hover:text-white-500" href="/index">Home</a>
-      </li>
-      <li>
-        <a class="hover:text-white-500" href="/index5">Service</a>
-      </li>
-      
-    </ul>
-  </div>
-  <div class="flex items-center gap-6">
-    <a href="/logout" class="bg-[#0d51c6] text-white px-5 py-2 rounded-full hover:bg-[#041532]">
-      logout
-    </a>
-    <ion-icon onclick="onToggleMenu(this)" name="menu" class="text-3xl cursor-pointer md:hidden"></ion-icon>
-  </div>
-</nav>
-</header>
+<%- include('partials/navbar') %>
 
 <!-- MODERN PROFILE CONTENT -->
 <div class="profile-container">
@@ -381,13 +358,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Hamburger menu functionality
-const navLinks = document.querySelector('.nav-links')
-function onToggleMenu(e) {
-    e.name = e.name === 'menu' ? 'close' : 'menu'
-    navLinks.classList.toggle('top-[8.4%]')
-    navLinks.classList.toggle('opacity-40')
-}
 </script>
 </body>
 </html>

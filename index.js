@@ -7,12 +7,38 @@ import { Strategy } from "passport-local";
 import session from "express-session";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import nodemailer from "nodemailer";
 
 dotenv.config(); // Load variables from .env
 
 const app = express();
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
+
+// Nodemailer transporter (uses Gmail by default). Set EMAIL_USER and EMAIL_PASSWORD in .env
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+
+const sendEmail = async (to, subject, html) => {
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject,
+      html,
+    });
+    console.log('Email sent:', info.response);
+    return true;
+  } catch (err) {
+    console.error('Email send error:', err.message);
+    return false;
+  }
+};
 
 app.use(
     session({    
@@ -35,20 +61,51 @@ app.use(express.static("public"));
 app.use(passport.initialize());
 app.use(passport.session());
 
-const isRender = process.env.PG_HOST && process.env.PG_HOST.includes("render");
+// Use connection pool instead of single client
+// Prefer DATABASE_URL if provided (e.g., Neon), otherwise use discrete env vars
+const baseDbConfig = process.env.DATABASE_URL && process.env.DATABASE_URL.trim().length > 0
+  ? {
+      connectionString: process.env.DATABASE_URL,
+      // Neon and many hosted PGs require SSL
+      ssl: { rejectUnauthorized: false },
+    }
+  : {
+      user: process.env.PG_USER,
+      host: process.env.PG_HOST,
+      database: process.env.PG_DATABASE,
+      password: process.env.PG_PASSWORD,
+      port: parseInt(process.env.PG_PORT || '5432', 10),
+      ssl: { rejectUnauthorized: false },
+    };
 
-const db = new pg.Client({
-  user: process.env.PG_USER,
-  host: process.env.PG_HOST,
-  database: process.env.PG_DATABASE,
-  password: process.env.PG_PASSWORD,
-  port: process.env.PG_PORT,
-  ssl: isRender ? { rejectUnauthorized: false } : false,
+const db = new pg.Pool({
+  ...baseDbConfig,
+  // Keep this modest to avoid hosted DB connection limits (Neon free tiers often 3–10)
+  max: parseInt(process.env.PG_POOL_MAX || '5', 10),
+  idleTimeoutMillis: parseInt(process.env.PG_IDLE_TIMEOUT_MS || '30000', 10),
+  connectionTimeoutMillis: parseInt(process.env.PG_CONN_TIMEOUT_MS || '30000', 10),
+  keepAlive: true,
 });
 
-db.connect()
+db.on('connect', () => console.log('PostgreSQL client connected'));
+db.on('acquire', () => console.log('PostgreSQL client acquired from pool'));
+db.on('remove', () => console.log('PostgreSQL client removed from pool'));
+db.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+});
+
+// Lightweight connectivity probe
+(db.query('SELECT 1'))
   .then(() => console.log("Connected to PostgreSQL"))
-  .catch(err => console.error("Connection error:", err));
+  .catch(err => {
+    console.error("Connection error:", err);
+    console.log("Retrying connection in 5 seconds...");
+    setTimeout(() => {
+      db.query('SELECT 1')
+        .then(() => console.log("Reconnected to PostgreSQL"))
+        .catch(err => console.error("Reconnection error:", err));
+    }, 5000);
+  });
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ridepartner_contacts';
@@ -177,6 +234,8 @@ const createAdminTable = async () => {
                 ["admin", hashedPassword, "admin@ridepartner.com", "System Administrator"]
             );
             console.log("Default admin created - Username: admin, Password: admin123");
+        } else {
+            console.log("Admins already exist in database");
         }
     } catch (err) {
         console.error("Error creating admins table:", err);
@@ -213,9 +272,27 @@ const createBookingStatusTable = async () => {
     }
 };
 
-createBookingsTable();
-createAdminTable();
-createBookingStatusTable();
+// Create join requests table
+const createJoinRequestsTable = async () => {
+    try {
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS join_requests (
+                id SERIAL PRIMARY KEY,
+                booking_id INTEGER REFERENCES bookings(id) ON DELETE CASCADE,
+                requester_email VARCHAR(255) NOT NULL,
+                requester_name VARCHAR(255) NOT NULL,
+                requester_phone VARCHAR(20),
+                message TEXT,
+                status VARCHAR(50) DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                response_at TIMESTAMP
+            )
+        `);
+        console.log("Join requests table created or already exists");
+    } catch (err) {
+        console.error("Error creating join requests table:", err);
+    }
+};
 
 app.get("/", (req, res) => {
     res.render("signup.ejs");
@@ -391,34 +468,6 @@ app.delete("/api/contacts/:id", async (req, res) => {
     }
 });
 
-// Admin signup page
-app.get("/admin-signup", (req, res) => {
-    res.render("admin-signup.ejs");
-});
-
-// Admin login page
-app.get("/admin-login", (req, res) => {
-    res.render("admin-login.ejs");
-});
-
-// Admin dashboard (protected)
-app.get("/admin", (req, res) => {
-    if (req.isAuthenticated() && req.user.role === 'admin') {
-        res.render("admin.ejs", { user: req.user });
-    } else {
-        res.redirect("/admin-login");
-    }
-});
-
-// Admin logout
-app.get("/admin-logout", (req, res) => {
-    req.logout((err) => {
-        if (err) {
-            console.error("Error during logout:", err);
-        }
-        res.redirect("/admin-login");
-    });
-});
 
 app.get("/logout", (req, res) => {
     res.redirect("sign");
@@ -507,35 +556,257 @@ app.post("/book", async (req, res) => {
     }
 });
 
-// Admin signup POST route
-app.post("/admin-signup", async (req, res) => {
-    const { username, email, password, fullName } = req.body;
-    
+// Get all available bookings (only pending status, exclude current user's own bookings)
+app.get("/api/bookings", async (req, res) => {
+    const userEmail = (req.user && req.user.email) ? req.user.email : (req.query.email || null);
     try {
-        // Check if admin already exists
-        const checkResult = await db.query("SELECT * FROM admins WHERE username = $1 OR email = $2", [username, email]);
-        
-        if (checkResult.rows.length > 0) {
-            return res.redirect("/admin-signup?error=admin_exists");
+        let query = `
+            SELECT 
+                id, 
+                pickup_location, 
+                destination, 
+                booking_date, 
+                booking_time, 
+                passengers, 
+                vehicle_type, 
+                user_name, 
+                user_email, 
+                user_phone,
+                special_notes,
+                status,
+                created_at
+            FROM bookings 
+            WHERE status = 'pending'`;
+        const params = [];
+        if (userEmail) {
+            query += " AND user_email <> $1";
+            params.push(userEmail);
         }
+        query += " ORDER BY booking_date DESC, booking_time DESC";
+
+        const result = await db.query(query, params);
         
-        // Hash password and create admin
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
-        await db.query(
-            "INSERT INTO admins (username, password, email, full_name) VALUES ($1, $2, $3, $4)",
-            [username, hashedPassword, email, fullName]
-        );
-        
-        console.log(`New admin created: ${username} (${email})`);
-        res.redirect("/admin-login?success=admin_created");
-        
+        res.json({
+            success: true,
+            data: result.rows
+        });
     } catch (err) {
-        console.error("Error creating admin:", err);
-        res.redirect("/admin-signup?error=server_error");
+        console.error("Error fetching bookings:", err);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching bookings"
+        });
     }
 });
 
-// Admin login POST route
+// Submit a join request
+app.post("/api/join-request", async (req, res) => {
+    const { booking_id, requester_email, requester_name, requester_phone, message } = req.body;
+    
+    try {
+        // Get booking details
+        const bookingResult = await db.query("SELECT * FROM bookings WHERE id = $1", [booking_id]);
+        
+        if (bookingResult.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Booking not found"
+            });
+        }
+        
+        const booking = bookingResult.rows[0];
+        
+        // Insert join request
+        await db.query(
+            `INSERT INTO join_requests (booking_id, requester_email, requester_name, requester_phone, message, status) 
+             VALUES ($1, $2, $3, $4, $5, 'pending')`,
+            [booking_id, requester_email, requester_name, requester_phone, message]
+        );
+        
+        console.log(`Join request submitted: ${requester_name} wants to join booking #${booking_id}`);
+        console.log(`Owner will be notified: ${booking.user_email}`);
+        console.log(`Requester email: ${requester_email}`);
+        console.log(`Requester phone: ${requester_phone}`);
+        
+        res.json({
+            success: true,
+            message: "Join request submitted successfully",
+            data: {
+                booking_id,
+                booking_owner: booking.user_name,
+                booking_owner_email: booking.user_email
+            }
+        });
+        
+    } catch (err) {
+        console.error("Error creating join request:", err);
+        res.status(500).json({
+            success: false,
+            message: "Error submitting join request"
+        });
+    }
+});
+
+// Get user's bookings with join requests
+app.get("/api/my-bookings", async (req, res) => {
+    const { email } = req.query;
+    
+    if (!email) {
+        return res.status(400).json({
+            success: false,
+            message: "Email required"
+        });
+    }
+    
+    try {
+        const result = await db.query(`
+            SELECT 
+                b.id,
+                b.pickup_location,
+                b.destination,
+                b.booking_date,
+                b.booking_time,
+                b.passengers,
+                b.vehicle_type,
+                b.user_name,
+                b.user_email,
+                b.user_phone,
+                b.special_notes,
+                b.status,
+                b.created_at,
+                json_agg(json_build_object(
+                    'id', jr.id,
+                    'requester_name', jr.requester_name,
+                    'requester_email', jr.requester_email,
+                    'requester_phone', jr.requester_phone,
+                    'message', jr.message,
+                    'status', jr.status,
+                    'created_at', jr.created_at
+                )) FILTER (WHERE jr.id IS NOT NULL) as join_requests
+            FROM bookings b
+            LEFT JOIN join_requests jr ON b.id = jr.booking_id
+            WHERE b.user_email = $1
+            GROUP BY b.id
+            ORDER BY b.booking_date DESC
+        `, [email]);
+        
+        res.json({
+            success: true,
+            data: result.rows
+        });
+    } catch (err) {
+        console.error("Error fetching user bookings:", err);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching bookings"
+        });
+    }
+});
+
+// Get join requests for user (by email)
+app.get("/api/my-join-requests", async (req, res) => {
+    const { email } = req.query;
+    
+    if (!email) {
+        return res.status(400).json({
+            success: false,
+            message: "Email required"
+        });
+    }
+    
+    try {
+        const result = await db.query(`
+            SELECT 
+                jr.id,
+                jr.booking_id,
+                jr.requester_email,
+                jr.requester_name,
+                jr.requester_phone,
+                jr.message,
+                jr.status,
+                jr.created_at,
+                b.pickup_location,
+                b.destination,
+                b.booking_date,
+                b.booking_time
+            FROM join_requests jr
+            JOIN bookings b ON jr.booking_id = b.id
+            WHERE b.user_email = $1
+            ORDER BY jr.created_at DESC
+        `, [email]);
+        
+        res.json({
+            success: true,
+            data: result.rows
+        });
+    } catch (err) {
+        console.error("Error fetching join requests:", err);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching join requests"
+        });
+    }
+});
+
+// Update join request status
+app.post("/api/join-request-response", async (req, res) => {
+    const { request_id, status } = req.body;
+    
+    if (!['accepted', 'rejected'].includes(status)) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid status"
+        });
+    }
+    
+    try {
+        // Get the join request and booking info
+        const joinRequestResult = await db.query(
+            `SELECT jr.*, b.id as booking_id FROM join_requests jr 
+             JOIN bookings b ON jr.booking_id = b.id WHERE jr.id = $1`,
+            [request_id]
+        );
+        
+        if (joinRequestResult.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Join request not found"
+            });
+        }
+        
+        const booking_id = joinRequestResult.rows[0].booking_id;
+        
+        // Update join request status
+        await db.query(
+            `UPDATE join_requests SET status = $1, response_at = NOW() WHERE id = $2`,
+            [status, request_id]
+        );
+        
+        // If accepted, update booking status to 'accepted' (removes from available bookings)
+        if (status === 'accepted') {
+            await db.query(
+                `UPDATE bookings SET status = 'accepted', updated_at = NOW() WHERE id = $1`,
+                [booking_id]
+            );
+            console.log(`Booking #${booking_id} marked as accepted - will no longer appear in available bookings`);
+        }
+        
+        res.json({
+            success: true,
+            message: `Join request ${status} successfully`,
+            booking_id
+        });
+    } catch (err) {
+        console.error("Error updating join request:", err);
+        res.status(500).json({
+            success: false,
+            message: "Error updating join request"
+        });
+    }
+});
+
+// Admin login POST route - REMOVED
+// This route no longer exists
 app.post("/admin-login", async (req, res) => {
     const { username, password } = req.body;
     
@@ -668,6 +939,81 @@ app.post("/update-booking/:id", async (req, res) => {
 
 
 
+// View all available bookings
+app.get("/view-bookings", (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render("view-bookings.ejs", { user: req.user });
+    } else {
+        res.redirect("/sign");
+    }
+});
+
+// View my bookings and manage join requests
+app.get("/my-bookings", (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render("my-bookings.ejs", { user: req.user });
+    } else {
+        res.redirect("/sign");
+    }
+});
+
+// View my join requests
+app.get("/my-requests", (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render("my-requests.ejs", { user: req.user });
+    } else {
+        res.redirect("/sign");
+    }
+});
+
+// Get user's join requests
+app.get("/api/my-requests", async (req, res) => {
+    const { email } = req.query;
+    
+    if (!email) {
+        return res.status(400).json({
+            success: false,
+            message: "Email required"
+        });
+    }
+    
+    try {
+        const result = await db.query(`
+            SELECT 
+                jr.id,
+                jr.booking_id,
+                jr.requester_email,
+                jr.requester_name,
+                jr.requester_phone,
+                jr.message,
+                jr.status,
+                jr.created_at,
+                jr.response_at,
+                b.pickup_location,
+                b.destination,
+                b.booking_date,
+                b.booking_time,
+                b.user_name,
+                b.user_phone
+            FROM join_requests jr
+            JOIN bookings b ON jr.booking_id = b.id
+            WHERE jr.requester_email = $1
+            ORDER BY jr.created_at DESC
+        `, [email]);
+        
+        res.json({
+            success: true,
+            data: result.rows
+        });
+    } catch (err) {
+        console.error("Error fetching user requests:", err);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching requests"
+        });
+    }
+});
+
 app.get("/profile", (req, res) => {
     // console.log(req.user);
     if (req.isAuthenticated()) {
@@ -707,15 +1053,46 @@ const createUsersTable = async () => {
     }
 };
 
-// Call all table creation functions:
-createBookingsTable();
-createAdminTable();
-createBookingStatusTable();
-createUsersTable(); // ADD THIS
+// Configure Passport strategy first
+passport.use(
+    new Strategy(async function verify(username, password, cb) {
+      try {
+        const result = await db.query("SELECT * FROM users WHERE email = $1 ", [
+          username,
+        ]);
+        if (result.rows.length > 0) {
+          const user = result.rows[0];
+          const storedHashedPassword = user.password;
+          bcrypt.compare(password, storedHashedPassword, (err, valid) => {
+            if (err) {
+              console.error("Error comparing passwords:", err);
+              return cb(err);
+            } else {
+              if (valid) {
+                return cb(null, user);
+              } else {
+                return cb(null, false);
+              }
+            }
+          });
+        } else {
+          return cb("User not found");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    })
+);
 
-// ===== FIXED ROUTES =====
+passport.serializeUser((user, cb) => {
+    cb(null, user);
+});
+passport.deserializeUser((user, cb) => {
+    cb(null, user);
+});
 
-// Simple /sign GET route (keep only this one, remove the duplicate)
+// ===== ROUTES =====
+
 app.get("/sign", (req, res) => {
     if (req.isAuthenticated()) {
         return res.redirect("/profile");
@@ -723,7 +1100,14 @@ app.get("/sign", (req, res) => {
     res.render("sign.ejs");
 });
 
-// Fixed signup POST route
+app.post(
+    "/sign",
+    passport.authenticate("local", {
+        successRedirect: "/profile",
+        failureRedirect: "/sign",
+    })
+);
+
 app.post("/signup", async (req, res) => {
     const email = req.body.username;
     const password = req.body.password;
@@ -747,7 +1131,6 @@ app.post("/signup", async (req, res) => {
         
         const user = result.rows[0];
         
-        // Log the user in after signup
         req.login(user, (err) => {
             if (err) {
                 console.error("Error during login after signup:", err);
@@ -763,7 +1146,6 @@ app.post("/signup", async (req, res) => {
     }
 });
 
-// Profile route (already correct)
 app.get("/profile", (req, res) => {
     if (req.isAuthenticated()) {
         res.render("profile.ejs", {
@@ -778,76 +1160,30 @@ app.get("/profile", (req, res) => {
     }
 });
 
-// Login POST route (already correct)
-app.post(
-    "/sign",
-    passport.authenticate("local", {
-        successRedirect: "/profile",
-        failureRedirect: "/sign",
-    })
-);
-  
-
-
-  
-
-  app.post(
-    "/sign",
-    passport.authenticate("local", {
-      successRedirect: "/profile",
-      failureRedirect: "/sign",
-    })
-  );
-
-
-
-
-    passport.use(
-        new Strategy(async function verify(username, password, cb) {
-          try {
-            const result = await db.query("SELECT * FROM users WHERE email = $1 ", [
-              username,
-            ]);
-            if (result.rows.length > 0) {
-              const user = result.rows[0];
-              const storedHashedPassword = user.password;
-              bcrypt.compare(password, storedHashedPassword, (err, valid) => {
-                if (err) {
-                  //Error with password check
-                  console.error("Error comparing passwords:", err);
-                  return cb(err);
-                } else {
-                  if (valid) {
-                    //Passed password check
-                    return cb(null, user);
-                  } else {
-                    //Did not pass password check
-                    return cb(null, false);
-                  }
-                }
-              });
-            } else {
-              return cb("User not found");
-            }
-          } catch (err) {
-            console.log(err);
-          }
-        })
-      );
-
-
-
-  
-
-
-passport.serializeUser((user, cb) => {
-    cb(null, user);
-  });
-  passport.deserializeUser((user, cb) => {
-    cb(null, user);
-  });
-
-  app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-  });
+// Initialize tables and start server
+(async () => {
+    try {
+        // Wait for connection pool to establish
+        console.log("Waiting for database connection pool to establish...");
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        await createBookingsTable();
+        await createAdminTable();
+        await createBookingStatusTable();
+        await createUsersTable();
+        await createJoinRequestsTable();
+        console.log("All tables initialized successfully");
+        
+        // Start server after tables are initialized
+        app.listen(port, () => {
+            console.log(`Server running on port ${port}`);
+        });
+    } catch (err) {
+        console.error("Error initializing tables:", err);
+        // Don't exit - let server start anyway
+        app.listen(port, () => {
+            console.log(`Server running on port ${port} (tables initialization deferred)`);
+        });
+    }
+})();
 
